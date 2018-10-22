@@ -155,12 +155,7 @@ class AotClient:
       params = params.append(('order', order))
 
     url = f'{self._hostname}/{endpoint}'
-
-    print(f'sending request to {url}')
-    print(f'params are {params}')
-
     response = requests.get(url, params)
-
 
     if paged:
       return PagedResponse(payload=response.json(), client=self)

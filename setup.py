@@ -4,7 +4,7 @@ from setuptools import find_packages, setup
 
 
 # semantic versioning
-VERSION = '0.1.0'
+VERSION = '0.1.1'
 
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -22,6 +22,9 @@ setup(
     author='Vince Forgione',
     author_email='vforgione@uchicago.edu',
     license='MIT',
+    install_requires=[
+        'requests'
+    ],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
