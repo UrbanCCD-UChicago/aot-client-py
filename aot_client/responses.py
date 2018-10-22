@@ -100,7 +100,7 @@ class PagedResponse:
       else:
         self = refreshed
 
-    raise StopIteration
+    return
 
   @property
   def data(self) -> dict:

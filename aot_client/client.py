@@ -49,7 +49,7 @@ class AotClient:
   def __repr__(self) -> str:
     return f'<AotClient {self}>'
 
-  def list_projects(self, page: int=1, size: int=200, order: str='asc:name', filters: F=None) -> PagedResponse:
+  def list_projects(self, page: int=None, size: int=None, order: str=None, filters: F=None) -> PagedResponse:
     """Returns a ``PagedResponse`` object with a list of *project*
     metadata records. Projects are the highest level in the hierarchy
     of system. 
@@ -68,7 +68,7 @@ class AotClient:
   def get_project_details(self, slug) -> Response:
     return self._send_request(f'/projects/{slug}', paged=False)
 
-  def list_nodes(self, page: int=1, size: int=200, order: str='asc:vsn', filters: F=None) -> PagedResponse:
+  def list_nodes(self, page: int=None, size: int=None, order: str=None, filters: F=None) -> PagedResponse:
     """Returns a ``PagedResponse`` object with a list of *node*
     metadata records. Nodes are the physical instruments deployed
     with sensors to record observations. 
@@ -87,7 +87,7 @@ class AotClient:
   def get_node_details(self, vsn) -> Response:
     return self._send_request(f'/nodes/{vsn}', paged=False)
     
-  def list_sensors(self, page: int=1, size: int=200, order: str='asc:path', filters: F=None) -> PagedResponse:
+  def list_sensors(self, page: int=None, size: int=None, order: str=None, filters: F=None) -> PagedResponse:
     """Returns a ``PagedResponse`` object with a list of *sensor*
     metadata records. Sensors are the components onboard nodes. They
     are the things that record observations.
@@ -106,7 +106,7 @@ class AotClient:
   def get_sensor_details(self, path) -> Response:
     return self._send_request(f'/sensors/{path}', paged=False)
 
-  def list_observations(self, page: int=1, size: int=200, order: str='desc:timestamp', filters: F=None) -> PagedResponse:
+  def list_observations(self, page: int=None, size: int=None, order: str=None, filters: F=None) -> PagedResponse:
     """Returns a ``PagedResponse`` object with a list of *observations*.
     Observations are the data collected by the sensors.
     
@@ -121,7 +121,7 @@ class AotClient:
     """
     return self._send_request('/observations', page=page, size=size, order=order, filters=filters)
 
-  def list_raw_observations(self, page: int=1, size: int=200, order: str='desc:timestamp', filters: F=None) -> PagedResponse:
+  def list_raw_observations(self, page: int=None, size: int=None, order: str=None, filters: F=None) -> PagedResponse:
     """Returns a ``PagedResponse`` object with a list of 
     *raw observations*. Raw observations are similar to regular
     observations, however they contain the untested machine value
@@ -155,9 +155,14 @@ class AotClient:
       params = params.append(('order', order))
 
     url = f'{self._hostname}/{endpoint}'
-    payload = requests.get(url, params)
+
+    print(f'sending request to {url}')
+    print(f'params are {params}')
+
+    response = requests.get(url, params)
+
 
     if paged:
-      return PagedResponse(payload=payload, client=self)
+      return PagedResponse(payload=response.json(), client=self)
     else:  
-      return Response(payload=payload)
+      return Response(payload=response.json())
