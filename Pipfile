@@ -10,6 +10,9 @@ requests = "*"
 pytest = "*"
 pytest-cov = "*"
 responses = "*"
+setuptools = "*"
+wheel = "*"
+twine = "*"
 
 [requires]
 python_version = "3.6"
