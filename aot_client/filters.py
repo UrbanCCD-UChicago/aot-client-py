@@ -1,4 +1,4 @@
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 
 
 class F:
@@ -45,15 +45,12 @@ class F:
   """
 
   def __init__(self, *args):
-    """Instantiates a new instance of ``F``
-    """
-    self.filters: Dict[str, tuple] = {}
-
+    self.filters = {}
     if args:
-      key, op, value = args
-      self.filters[key] = (op, value)
+      key, *params = args
+      self.filters[key] = [tuple(params)]
 
-  def __iand__(self, other) -> 'F':
+  def __iand__(self, other: Union['F', tuple]) -> 'F':
     """Joins two filters together.
 
     .. example::
@@ -69,41 +66,23 @@ class F:
       ]
     }
     """
-    if isinstance(other, F):
-      for key, op_value in other.filters.items():
+    if isinstance(other, tuple):
+      self.__iand__(F(*other))
+    
+    elif isinstance(other, F):
+      for key, params in other.filters.items():
         if key in self.filters:
-          curr_val = self.filters[key]
-          if not isinstance(curr_val, list):
-            curr_val = [curr_val]
-
-          if isinstance(op_value, list):
-            curr_val.extend(op_value)
-          else:
-            curr_val.append(op_value)
-          self.filters[key] = curr_val
-
+          self.filters[key].extend(params)
+        
         else:
-          self.filters[key] = op_value
-
-    elif isinstance(other, tuple):
-      key, op, value = other
-
-      if key in self.filters:
-        curr_val = self.filters[key]
-        if not isinstance(curr_val, list):
-          curr_val = [curr_val]
-        curr_val.append((op, value))
-        self.filters[key] = curr_val
-
-      else:
-        self.filters[key] = (op, value)
-
+          self.filters[key] = params
+    
     else:
-      raise TypeError('other is neither F not Tuple')
-
+      raise TypeError('Must be either an instance of F or a tuple')
+    
     return self
 
-  def __ior__(self, other) -> 'F':
+  def __ior__(self, other: Union['F', tuple]) -> 'F':
     """Adds or replaces a filter value.
 
     .. example::
@@ -116,32 +95,29 @@ class F:
       'name': ('eq', 'bob')
     }
     """
-    if isinstance(other, F):
-      for key, op_value in other.filters.items():
-        self.filters[key] = op_value
+    if isinstance(other, tuple):
+      self.__ior__(F(*other))
 
-    elif isinstance(other, tuple):
-      key, op, value = other
-      self.filters[key] = (op, value)
+    elif isinstance(other, F):
+      for key, params in other.filters.items():
+        self.filters[key] = params
 
     else:
-      raise TypeError('other is neither F nor Tuple')
+      raise TypeError('Must be either an instance of F or a tuple')
 
     return self
 
-  def to_query_params(self) -> List[Tuple[str, str]]:
+  def to_query_params(self):
     """Returns the filter as a list of tuples.
     """
     params = []
 
-    for key, op_value in self.filters.items():
-      if isinstance(op_value, list):
-        key = '{key}[]'.format(key=key)
-        for (op, value) in op_value:
-          params.append(
-            (key, '{op}:{value}'.format(op=op, value=value)))
-      else:
-        op, value = op_value
-        params.append((key, '{op}:{value}'.format(op=op, value=value)))
+    for key, values in self.filters.items():
+      if len(values) > 1:
+        key = f'{key}[]'
+
+      for value in values:
+        value = ':'.join(str(x) for x in value)
+        params.append((key, value))
 
     return params

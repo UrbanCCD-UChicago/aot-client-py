@@ -9,7 +9,7 @@ def test_empty_init():
 def test_tuple_init():
     f = F('age', 'gt', 21)
     assert f.filters == {
-        'age': ('gt', 21)
+        'age': [('gt', 21)]
     }
 
 
@@ -19,13 +19,13 @@ def test_iand_with_a_tuple():
 
     f &= ('name', 'eq', 'vince')
     assert f.filters == {
-        'name': ('eq', 'vince')
+        'name': [('eq', 'vince')]
     }
 
     f &= ('age', 'gt', 21)
     assert f.filters == {
-        'name': ('eq', 'vince'),
-        'age': ('gt', 21)
+        'name': [('eq', 'vince')],
+        'age': [('gt', 21)]
     }
 
     f &= ('name', 'eq', 'bob')
@@ -34,7 +34,7 @@ def test_iand_with_a_tuple():
             ('eq', 'vince'),
             ('eq', 'bob')
         ],
-        'age': ('gt', 21)
+        'age': [('gt', 21)]
     }
 
 
@@ -44,13 +44,13 @@ def test_iand_with_another_filter():
 
     f &= F('name', 'eq', 'vince')
     assert f.filters == {
-        'name': ('eq', 'vince')
+        'name': [('eq', 'vince')]
     }
 
     f &= F('age', 'gt', 21)
     assert f.filters == {
-        'name': ('eq', 'vince'),
-        'age': ('gt', 21)
+        'name': [('eq', 'vince')],
+        'age': [('gt', 21)]
     }
 
     f &= F('name', 'eq', 'bob')
@@ -59,7 +59,7 @@ def test_iand_with_another_filter():
             ('eq', 'vince'),
             ('eq', 'bob')
         ],
-        'age': ('gt', 21)
+        'age': [('gt', 21)]
     }
 
 
@@ -69,19 +69,19 @@ def test_ior_with_a_tuple():
 
     f |= ('name', 'eq', 'vince')
     assert f.filters == {
-        'name': ('eq', 'vince')
+        'name': [('eq', 'vince')]
     }
 
     f |= ('age', 'gt', 21)
     assert f.filters == {
-        'name': ('eq', 'vince'),
-        'age': ('gt', 21)
+        'name': [('eq', 'vince')],
+        'age': [('gt', 21)]
     }
 
     f |= ('name', 'eq', 'bob')
     assert f.filters == {
-        'name': ('eq', 'bob'),
-        'age': ('gt', 21)
+        'name': [('eq', 'bob')],
+        'age': [('gt', 21)]
     }
 
 
@@ -91,19 +91,19 @@ def test_ior_with_another_filter():
 
     f |= F('name', 'eq', 'vince')
     assert f.filters == {
-        'name': ('eq', 'vince')
+        'name': [('eq', 'vince')]
     }
 
     f |= F('age', 'gt', 21)
     assert f.filters == {
-        'name': ('eq', 'vince'),
-        'age': ('gt', 21)
+        'name': [('eq', 'vince')],
+        'age': [('gt', 21)]
     }
 
     f |= F('name', 'eq', 'bob')
     assert f.filters == {
-        'name': ('eq', 'bob'),
-        'age': ('gt', 21)
+        'name': [('eq', 'bob')],
+        'age': [('gt', 21)]
     }
 
 
@@ -117,4 +117,11 @@ def test_to_query_params():
     assert f.to_query_params() == [
         ('name[]', 'eq:vince'),
         ('name[]', 'eq:bob')
+    ]
+
+
+def test_two_length_filter():
+    f = F('include_nodes', True)
+    assert f.to_query_params() == [
+        ('include_nodes', 'True')
     ]
