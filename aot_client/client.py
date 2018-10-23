@@ -49,7 +49,7 @@ class AotClient:
   def __repr__(self) -> str:
     return f'<AotClient {self}>'
 
-  def list_projects(self, page: int=None, size: int=None, order: str=None, filters: F=None) -> PagedResponse:
+  def list_projects(self, filters: F=None) -> PagedResponse:
     """Returns a ``PagedResponse`` object with a list of *project*
     metadata records. Projects are the highest level in the hierarchy
     of system. 
@@ -58,17 +58,14 @@ class AotClient:
 
     .. _API documentation: https://api.arrayofthings.org/
 
-    :param page: The page number
-    :param size: The maximum number of items in the returned page
-    :param order: The order of the items
     :param filters: Query parameters applied to the request
     """
-    return self._send_request('/projects', page=page, size=size, order=order, filters=filters)
+    return self._send_request('/projects', filters=filters)
 
   def get_project_details(self, slug) -> Response:
     return self._send_request(f'/projects/{slug}', paged=False)
 
-  def list_nodes(self, page: int=None, size: int=None, order: str=None, filters: F=None) -> PagedResponse:
+  def list_nodes(self, filters: F=None) -> PagedResponse:
     """Returns a ``PagedResponse`` object with a list of *node*
     metadata records. Nodes are the physical instruments deployed
     with sensors to record observations. 
@@ -77,17 +74,14 @@ class AotClient:
 
     .. _API documentation: https://api.arrayofthings.org/
 
-    :param page: The page number
-    :param size: The maximum number of items in the returned page
-    :param order: The order of the items
     :param filters: Query parameters applied to the request
     """
-    return self._send_request('/nodes', page=page, size=size, order=order, filters=filters)
+    return self._send_request('/nodes', filters=filters)
 
   def get_node_details(self, vsn) -> Response:
     return self._send_request(f'/nodes/{vsn}', paged=False)
     
-  def list_sensors(self, page: int=None, size: int=None, order: str=None, filters: F=None) -> PagedResponse:
+  def list_sensors(self, filters: F=None) -> PagedResponse:
     """Returns a ``PagedResponse`` object with a list of *sensor*
     metadata records. Sensors are the components onboard nodes. They
     are the things that record observations.
@@ -96,17 +90,14 @@ class AotClient:
 
     .. _API documentation: https://api.arrayofthings.org/
 
-    :param page: The page number
-    :param size: The maximum number of items in the returned page
-    :param order: The order of the items
     :param filters: Query parameters applied to the request
     """
-    return self._send_request('/sensors', page=page, size=size, order=order, filters=filters)
+    return self._send_request('/sensors', filters=filters)
 
   def get_sensor_details(self, path) -> Response:
     return self._send_request(f'/sensors/{path}', paged=False)
 
-  def list_observations(self, page: int=None, size: int=None, order: str=None, filters: F=None) -> PagedResponse:
+  def list_observations(self, filters: F=None) -> PagedResponse:
     """Returns a ``PagedResponse`` object with a list of *observations*.
     Observations are the data collected by the sensors.
     
@@ -114,14 +105,11 @@ class AotClient:
 
     .. _API documentation: https://api.arrayofthings.org/
 
-    :param page: The page number
-    :param size: The maximum number of items in the returned page
-    :param order: The order of the items
     :param filters: Query parameters applied to the request
     """
-    return self._send_request('/observations', page=page, size=size, order=order, filters=filters)
+    return self._send_request('/observations', filters=filters)
 
-  def list_raw_observations(self, page: int=None, size: int=None, order: str=None, filters: F=None) -> PagedResponse:
+  def list_raw_observations(self, filters: F=None) -> PagedResponse:
     """Returns a ``PagedResponse`` object with a list of 
     *raw observations*. Raw observations are similar to regular
     observations, however they contain the untested machine value
@@ -132,27 +120,15 @@ class AotClient:
 
     .. _API documentation: https://api.arrayofthings.org/
 
-    :param page: The page number
-    :param size: The maximum number of items in the returned page
-    :param order: The order of the items
     :param filters: Query parameters applied to the request
     """
-    return self._send_request('/raw-observations', page=page, size=size, order=order,  filters=filters)
+    return self._send_request('/raw-observations',  filters=filters)
 
-  def _send_request(self, endpoint: str, paged: bool=True, page: int=None, size: int=None, order: str=None, filters: F=None) -> Union[Response, PagedResponse]:
+  def _send_request(self, endpoint: str, paged: bool=True, filters: F=None) -> Union[Response, PagedResponse]:
     if filters:
       params = filters.to_query_params()
     else:
       params = []
-
-    if page:
-      params = params.append(('page', page))
-
-    if size:
-      params = params.append(('size', size))
-
-    if order:
-      params = params.append(('order', order))
 
     url = f'{self._hostname}/{endpoint}'
     response = requests.get(url, params)
