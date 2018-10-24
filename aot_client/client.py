@@ -56,11 +56,11 @@ class AotClient:
     
     See the `API documentation`_ for details on the system design.
 
-    .. _API documentation: https://api.arrayofthings.org/
+    .. _API documentation: https://api.arrayofthings.org/docs
 
     :param filters: Query parameters applied to the request
     """
-    return self._send_request('/projects', filters=filters)
+    return self._send_request(f'{self._hostname}/projects', filters=filters)
 
   def get_project_details(self, slug) -> Response:
     return self._send_request(f'/projects/{slug}', paged=False)
@@ -72,11 +72,11 @@ class AotClient:
     
     See the `API documentation`_ for details on the system design.
 
-    .. _API documentation: https://api.arrayofthings.org/
+    .. _API documentation: https://api.arrayofthings.org/docs
 
     :param filters: Query parameters applied to the request
     """
-    return self._send_request('/nodes', filters=filters)
+    return self._send_request(f'{self._hostname}/nodes', filters=filters)
 
   def get_node_details(self, vsn) -> Response:
     return self._send_request(f'/nodes/{vsn}', paged=False)
@@ -88,11 +88,11 @@ class AotClient:
     
     See the `API documentation`_ for details on the system design.
 
-    .. _API documentation: https://api.arrayofthings.org/
+    .. _API documentation: https://api.arrayofthings.org/docs
 
     :param filters: Query parameters applied to the request
     """
-    return self._send_request('/sensors', filters=filters)
+    return self._send_request(f'{self._hostname}/sensors', filters=filters)
 
   def get_sensor_details(self, path) -> Response:
     return self._send_request(f'/sensors/{path}', paged=False)
@@ -103,11 +103,11 @@ class AotClient:
     
     See the `API documentation`_ for details on the system design.
 
-    .. _API documentation: https://api.arrayofthings.org/
+    .. _API documentation: https://api.arrayofthings.org/docs
 
     :param filters: Query parameters applied to the request
     """
-    return self._send_request('/observations', filters=filters)
+    return self._send_request(f'{self._hostname}/observations', filters=filters)
 
   def list_raw_observations(self, filters: F=None) -> PagedResponse:
     """Returns a ``PagedResponse`` object with a list of 
@@ -118,11 +118,11 @@ class AotClient:
     
     See the `API documentation`_ for details on the system design.
 
-    .. _API documentation: https://api.arrayofthings.org/
+    .. _API documentation: https://api.arrayofthings.org/docs
 
     :param filters: Query parameters applied to the request
     """
-    return self._send_request('/raw-observations',  filters=filters)
+    return self._send_request(f'{self._hostname}/raw-observations',  filters=filters)
 
   def _send_request(self, endpoint: str, paged: bool=True, filters: F=None) -> Union[Response, PagedResponse]:
     if filters:
@@ -130,8 +130,7 @@ class AotClient:
     else:
       params = []
 
-    url = f'{self._hostname}/{endpoint}'
-    response = requests.get(url, params)
+    response = requests.get(endpoint, params)
 
     if paged:
       return PagedResponse(payload=response.json(), client=self)

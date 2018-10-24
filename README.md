@@ -1,6 +1,6 @@
 # Array of Things Client
 
-This library serves as the official Python client to the [Array of Things API](https://api.arrayofthings.org/).
+This library serves as the official Python client to the [Array of Things API](https://api.arrayofthings.org/api).
 
 ## System Requirements
 
