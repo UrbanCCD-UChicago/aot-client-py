@@ -25,7 +25,7 @@ from aot_client import AotClient
 client = AotClient()
 projects = client.list_projects()
 for page in projects:
-  for proj in page:
+  for proj in page.data:
     print(f'{proj["name"]} is available at /api/projects/{proj["slug"]}')
 ```
 
