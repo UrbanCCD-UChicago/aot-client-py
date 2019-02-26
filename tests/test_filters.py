@@ -1,3 +1,4 @@
+import pytest
 from aot_client import F
 
 
@@ -63,6 +64,14 @@ def test_iand_with_another_filter():
     }
 
 
+def test_iand_with_a_dict():
+    f = F()
+    assert f.filters == {}
+
+    with pytest.raises(TypeError):
+        f &= {'name': 'vince'}
+
+
 def test_ior_with_a_tuple():
     f = F()
     assert f.filters == {}
@@ -105,6 +114,14 @@ def test_ior_with_another_filter():
         'name': [('eq', 'bob')],
         'age': [('gt', 21)]
     }
+
+
+def test_ior_with_a_dict():
+    f = F()
+    assert f.filters == {}
+
+    with pytest.raises(TypeError):
+        f |= {'name': 'vince'}
 
 
 def test_to_query_params():
