@@ -18,6 +18,7 @@ setup(
     version=VERSION,
     description='The Official Python Client of the Array of Things API',
     long_description=long_description,
+    long_description_content_type='text/markdown',
     url='https://github.com/UrbanCCD-UChicago/aot-client-py',
     author='Vince Forgione',
     author_email='vforgione@uchicago.edu',
