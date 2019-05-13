@@ -4,7 +4,7 @@ from setuptools import find_packages, setup
 
 
 # versioning should track against the api version
-VERSION = '2.0.0'
+VERSION = '2.1.0'
 
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -26,7 +26,7 @@ setup(
         'requests'
     ],
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Environment :: Console',

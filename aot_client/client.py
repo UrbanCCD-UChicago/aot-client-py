@@ -139,6 +139,18 @@ class AotClient:
         """
         return self._send_request(f'{self._hostname}/observations', filters=filters)
 
+    def list_metrics(self, filters: F = None) -> PagedResponse:
+        """Returns a ``PagedResponse`` object with a list of *metrics*.
+        Metrics are telemetry data about the operational state of the nodes..
+
+        See the `API documentation`_ for details on the system design.
+
+        .. _API documentation: https://api.arrayofthings.org/docs
+
+        :param filters: Query parameters applied to the request
+        """
+        return self._send_request(f'{self._hostname}/metrics', filters=filters)
+
     def _send_request(self, endpoint: str, paged: bool = True, filters: F = None) -> Union[Response, PagedResponse]:
         if filters:
             params = filters.to_query_params()

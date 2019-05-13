@@ -51,3 +51,9 @@ def test_list_observations():
     client = AotClient()
     res = client.list_observations()
     assert isinstance(res, PagedResponse)
+
+
+def test_list_metrics():
+    client = AotClient()
+    res = client.list_metrics()
+    assert isinstance(res, PagedResponse)
